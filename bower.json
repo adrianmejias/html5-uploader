@@ -1,27 +1,27 @@
 {
-	"name": "html5-uploader",
-	"description": "HTML5 file uploader.",
-	"version": "0.0.2",
-	"keywords": [
-		"html5",
-		"js",
-		"file",
-		"uploader",
-		"jquery"
-	],
-	"homepage": "https://adrianmejias.com/html5-uploader",
-	"main": [
-		"html5-uploader.js",
-		"html5-uploader.min.js"
-	],
-	"ignore": [
-		"index.html",
-		"html5-uploader-example.css",
-		"upload.php",
-		"composer.json",
-		"README.md"
-	],
-	"dependencies": [
-		"jquery": ">= 1.9.1"
-	]
+    "name": "html5-uploader",
+    "description": "HTML5 file uploader.",
+    "version": "0.0.3",
+    "keywords": [
+        "html5",
+        "js",
+        "file",
+        "uploader",
+        "jquery"
+    ],
+    "homepage": "https://adrianmejias.com/html5-uploader",
+    "main": [
+        "html5-uploader.js",
+        "html5-uploader.min.js"
+    ],
+    "ignore": [
+        "index.html",
+        "html5-uploader-example.css",
+        "upload.php",
+        "composer.json",
+        "README.md"
+    ],
+    "dependencies": {
+        "jquery": ">= 1.9.1"
+    }
 }
