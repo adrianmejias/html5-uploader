@@ -1,0 +1,30 @@
+{
+	"name": "adrianmejias/html5-uploader",
+	"description": "HTML5 file uploader.",
+	"keywords": [
+		"html5",
+		"js",
+		"file",
+		"uploader",
+		"jquery"
+	],
+	"homepage": "https://adrianmejias.com/html5-uploader",
+	"authors": [
+		{
+			"name": "Adrian Mejias",
+			"email": "adrianmejias@gmail.com"
+		}
+	],
+	"support": {
+		"issues": "https://github.com/adrianmejias/html5-uploader/issues"
+	},
+	"license": "Public Domain",
+	"extra": {
+		"branch-alias": {
+			"dev-master": "0.0.1"
+		}
+	},
+	"replace": {
+		"adrianmejias/html5-uploader": "self.version"
+	}
+}
