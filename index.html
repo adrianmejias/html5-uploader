@@ -11,7 +11,7 @@
 		<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
 		<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
 		<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-		<script src="html5-uploader.min.js"></script>
+		<script src="html5-uploader.js"></script>
 	</head>
 	<body>
 		<div class="container">
@@ -50,6 +50,10 @@
 		$(function()
 		{
 			$('input[type=file]').html5Uploader({
+				url: 'upload.php',
+				fields: {
+					'type': 'image'
+				},
 				holder: '.form-control-holder',
 				progress: function(data)
 				{
@@ -61,6 +65,10 @@
 				preview: function(data)
 				{
 					$('.form-control-preview').attr('src', data);
+				},
+				complete: function(data, response)
+				{
+					console.log('completed', data, response);
 				}
 			});
 		});

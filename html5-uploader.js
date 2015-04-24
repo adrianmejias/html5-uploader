@@ -2,102 +2,111 @@
 (function($) {
     $.fn.html5Uploader = function(options) {
         var defaults = {
-            accept: [
-                'image/png',
-                'image/jpeg',
-                'image/gif'
-            ],
-            url: null,
-            holder: null,
-            progress: null,
-            preview: null,
-            complete: null,
-            currentProgress: 0
-        };
-        var settings = $.extend(defaults, options);
-        var previewMimeTypes = {
-            image: [
-                'image/png',
-                'image/jpeg',
-                'image/gif'
-            ]
-        };
-        // check for html5 support
-        var supported = {
-            filereader: typeof FileReader != 'undefined',
-            dnd: 'draggable' in document.createElement('span'),
-            formdata: !!window.FormData,
-            progress: 'upload' in new XMLHttpRequest
-        };
-        /**
-         * Functionality for uploading a file.
-         *
-         * @param  object e
-         * @param  object file
-         * @return void
-         */
-        var fileSelect = function(e, file) {
-            //debugger;
-            console.log('fileselect', file);
-            if (!settings.url) {
-                console.log('no url set');
-            }
-            // check if we support formdata
-            var formData = supported.formdata === true ? new FormData() : null;
-            if (supported.formdata === true) {
-                console.log('formdata supported');
-                if (settings.progress && settings.currentProgress != 0) {
-                    console.log('progress', 0);
-                    settings.currentProgress = 0;
-                    settings.progress(0);
+                accept: [
+                    'image/png',
+                    'image/jpeg',
+                    'image/gif'
+                ],
+                url: null,
+                fields: null,
+                holder: null,
+                progress: null,
+                preview: null,
+                complete: null,
+                currentProgress: 0
+            },
+            settings = $.extend(defaults, options),
+            previewMimeTypes = {
+                image: [
+                    'image/png',
+                    'image/jpeg',
+                    'image/gif'
+                ]
+            },
+            // check for html5 support
+            supported = {
+                filereader: typeof FileReader != 'undefined',
+                dnd: 'draggable' in document.createElement('span'),
+                formdata: !!window.FormData,
+                progress: 'upload' in new XMLHttpRequest
+            },
+            /**
+             * Functionality for uploading a file.
+             *
+             * @param  object e
+             * @param  object file
+             * @return void
+             */
+            fileSelect = function(e, file) {
+                //debugger;
+                console.log('fileselect', file);
+                if (!settings.url) {
+                    console.log('no url set');
                 }
-                // append our file data as a form variable
-                formData.append('file', file);
-                var xhr = new XMLHttpRequest();
-                // most likely done
-                xhr.onload = function() {
-                    // set progress bar to 100%
-                    if (settings.progress && settings.currentProgress != 100) {
-                        console.log('progress', 100);
-                        settings.currentProgress = 100;
-                        settings.progress(100);
+                // check if we support formdata
+                var formData = supported.formdata === true ? new FormData() : null;
+                if (supported.formdata === true) {
+                    console.log('formdata supported');
+                    if (settings.progress && settings.currentProgress != 0) {
+                        console.log('progress', 0);
+                        settings.currentProgress = 0;
+                        settings.progress(0);
                     }
-                    if (e.target.responseText) {
-                        var response = JSON.parse(e.target.responseText);
-                        if (settings.complete) {
-                            settings.complete(response);
+                    // append our file data as a form variable
+                    formData.append('file', file);
+                    // append our extra fields
+                    if (settings.fields) {
+                        $.each(settings.fields, function(key, value) {
+                            formData.append(key, value);
+                        });
+                    }
+                    var xhr = new XMLHttpRequest();
+                    // most likely done
+                    xhr.onload = function() {
+                        // set progress bar to 100%
+                        if (settings.progress && settings.currentProgress != 100) {
+                            console.log('progress', 100);
+                            settings.currentProgress = 100;
+                            settings.progress(100);
+                        }
+                        if (e.target.responseText) {
+                            var response = JSON.parse(e.target.responseText);
+                            if (settings.complete) {
+                                settings.complete(file, response);
+                            }
+                        }
+                    };
+                    // progress
+                    if (settings.progress && supported.progress === true) {
+                        console.log('progress supported');
+                        xhr.upload.onprogress = function(e) {
+                            if (e.lengthComputable) {
+                                var complete = (e.loaded / e.total * 100 | 0);
+                                settings.currentProgress = complete;
+                                console.log('progress', complete);
+                                settings.progress(complete);
+                            }
                         }
                     }
-                };
-                // progress
-                if (settings.progress && supported.progress === true) {
-                    console.log('progress supported');
-                    xhr.upload.onprogress = function(e) {
-                        if (e.lengthComputable) {
-                            var complete = (e.loaded / e.total * 100 | 0);
-                            settings.currentProgress = complete;
-                            console.log('progress', complete);
-                            settings.progress(complete);
-                        }
+                    //xhr.onerror(function(e) {});
+                    //xhr.onabort(function(e) {});
+                    xhr.open('POST', settings.url);
+                    xhr.send(formData);
+                } else {
+                    if (settings.complete) {
+                        settings.complete(file);
                     }
                 }
-                //xhr.onerror(function(e) {});
-                //xhr.onabort(function(e) {});
-                xhr.open('POST', settings.url);
-                xhr.send(formData);
-            }
-            if (settings.preview && supported.filereader === true && $.inArray(file.type, previewMimeTypes.image) != -1) {
-                console.log('filereader supported');
-                var reader = new FileReader();
-                reader.onload = function(e) {
-                    settings.preview(e.target.result);
-                };
-                reader.readAsDataURL(file);
-            }
-            if (settings.complete) {
-                settings.complete(file);
-            }
-        };
+                if (settings.preview && supported.filereader === true && $.inArray(file.type, previewMimeTypes.image) != -1) {
+                    console.log('filereader supported');
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        settings.preview(e.target.result);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+        // render functionality for each file input
         return this.each(function() {
             var $input = $(this);
             if ($input.is('input')) {
