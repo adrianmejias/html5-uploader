@@ -24,7 +24,7 @@
 					<form role="form">
 						<div class="form-group">
 							<label for="file" class="sr-only">File</label>
-							<input type="file" id="file" name="file" class="form-control">
+							<input type="file" id="file" name="file" data-url="upload.php" class="form-control">
 							<p class="help-block">
 								<div class="form-control-holder text-center text-muted">
 									Drag and drop your file here.
@@ -50,7 +50,7 @@
 		$(function()
 		{
 			$('input[type=file]').html5Uploader({
-				url: 'upload.php',
+				//url: 'upload.php',
 				fields: {
 					'type': 'image'
 				},

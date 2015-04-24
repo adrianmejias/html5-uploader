@@ -110,6 +110,9 @@
         return this.each(function() {
             var $input = $(this);
             if ($input.is('input')) {
+                if ($input.data('url').length) {
+                    settings.url = $input.data('url');
+                }
                 if (supported.dnd && settings.holder) {
                     console.log('dnd supported');
                     $(settings.holder).on('dragover', function(e) {
