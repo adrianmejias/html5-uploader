@@ -62,7 +62,7 @@
                     }
                     var xhr = new XMLHttpRequest();
                     // most likely done
-                    xhr.onload = function() {
+                    xhr.onload = function(e) {
                         // set progress bar to 100%
                         if (settings.progress && settings.currentProgress != 100) {
                             console.log('progress', 100);
