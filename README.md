@@ -39,7 +39,7 @@ Available options
 ```html
 <input type="file" accept="image/png|image/jpeg|image/gif" data-url="upload.asp" data-fields="customFields" data-holder=".drag-n-dro-here" data-progress="customProgress" data-preview="customPreview" data-complete="customComplete">
 ```
-
+or
 ```html
 <!-- alternate data-fields -->
 ..data-fields="token=ju3Fn55d24sADfa|type=image"..

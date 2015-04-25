@@ -1,7 +1,7 @@
 {
 	"name": "adrianmejias/html5-uploader",
 	"description": "HTML5 file uploader.",
-	"version": "0.0.7",
+	"version": "0.0.8",
 	"keywords": [
 		"html5",
 		"js",
@@ -22,10 +22,13 @@
 	"license": "Public Domain",
 	"extra": {
 		"branch-alias": {
-			"dev-master": "0.0.7-dev"
+			"dev-master": "0.0.x-dev"
 		}
 	},
 	"replace": {
 		"adrianmejias/html5-uploader": "self.version"
+	},
+	"require": {
+		"jquery/jquery": "1.11.*"
 	}
 }
