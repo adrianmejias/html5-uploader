@@ -1,37 +1,23 @@
 ;
 (function($) {
+    // support for images only
+    var previewMimeTypes = {
+            image: [
+                'image/png',
+                'image/jpeg',
+                'image/gif'
+            ]
+        },
+        // check for html5 support
+        supported = {
+            filereader: typeof FileReader != 'undefined',
+            dnd: 'draggable' in document.createElement('span'),
+            formdata: !!window.FormData,
+            progress: 'upload' in new XMLHttpRequest
+        };
+    // plugin
     $.fn.html5uploader = function(options) {
-        var defaults = {
-                accept: [
-                    'image/png',
-                    'image/jpeg',
-                    'image/gif'
-                ],
-                url: null,
-                fields: null,
-                holder: null,
-                progress: null,
-                preview: null,
-                complete: null,
-                debug: false,
-                history: [],
-                currentProgress: 0
-            },
-            settings = $.extend(defaults, options),
-            previewMimeTypes = {
-                image: [
-                    'image/png',
-                    'image/jpeg',
-                    'image/gif'
-                ]
-            },
-            // check for html5 support
-            supported = {
-                filereader: typeof FileReader != 'undefined',
-                dnd: 'draggable' in document.createElement('span'),
-                formdata: !!window.FormData,
-                progress: 'upload' in new XMLHttpRequest
-            },
+        var settings = $.extend($.fn.html5uploader.defaults, options),
             /**
              * @url http://www.paulirish.com/2009/log-a-lightweight-wrapper-for-consolelog/
              * @return void
@@ -47,12 +33,11 @@
             /**
              * Functionality for uploading a file.
              *
-             * @param  object e
-             * @param  object file
+             * @param  {object} e
+             * @param  {object} file
              * @return void
              */
             fileSelect = function(e, file) {
-                //debugger;
                 consoleLog('fileselect', file);
                 if (!settings.url) {
                     consoleLog('no url set');
@@ -82,15 +67,9 @@
                         setProgress(100);
                         if (e.target.responseText) {
                             var response = JSON.parse(e.target.responseText);
-                            if (settings.complete) {
-                                if (typeof settings.complete === 'string') {
-                                    var complete = window[settings.complete];
-                                    if (typeof complete === 'function') {
-                                        complete(file, response);
-                                    }
-                                } else {
-                                    settings.complete(file, response);
-                                }
+                            // check for a response
+                            if (response) {
+                                setComplete(file, response);
                             }
                         }
                     };
@@ -109,24 +88,16 @@
                     xhr.open('POST', settings.url);
                     xhr.send(formData);
                 } else {
-                    if (settings.complete) {
-                        if (typeof settings.complete === 'string') {
-                            var complete = window[settings.complete];
-                            if (typeof complete === 'function') {
-                                complete(file, response);
-                            }
-                        } else {
-                            settings.complete(file, response);
-                        }
-                    }
+                    setComplete(settings, file, {});
                 }
+                // preview image
                 if (settings.preview && supported.filereader === true && $.inArray(file.type, previewMimeTypes.image) != -1) {
                     consoleLog('filereader supported');
                     var reader = new FileReader();
                     reader.onload = function(e) {
-                        if (typeof settings.preview === 'string') {
+                        if (typeof settings.preview == 'string') {
                             var preview = window[settings.preview];
-                            if (typeof preview === 'function') {
+                            if (typeof preview == 'function') {
                                 preview(e.target.result);
                             }
                         } else {
@@ -136,79 +107,131 @@
                     reader.readAsDataURL(file);
                 }
             },
+            /**
+             * Functionality to set complete.
+             *
+             * @param {string} file
+             * @param {object} response
+             * @param void
+             */
+            setComplete = function(file, response) {
+                // complete
+                if (settings.complete) {
+                    if (typeof settings.complete == 'string') {
+                        var complete = window[settings.complete];
+                        if (typeof complete == 'function') {
+                            complete.call(this, file, response);
+                        }
+                    } else if (typeof settings.complete == 'function') {
+                        settings.complete.call(this, file, response);
+                    }
+                }
+                // error
+                if (settings.error && response.error) {
+                    if (typeof settings.error == 'string') {
+                        var error = window[settings.error];
+                        if (typeof error == 'function') {
+                            error.call(this, file, '', response.error);
+                        }
+                    } else {
+                        // TODO: error codes
+                        settings.error.call(this, file, '', response.error);
+                    }
+                }
+            },
+            /**
+             * Functionality to set progress.
+             *
+             * @param {integer} complete
+             * @return void
+             */
             setProgress = function(complete) {
                 if (settings.progress && settings.currentProgress != complete) {
                     consoleLog('progress', complete);
                     settings.currentProgress = complete;
-                    if (typeof settings.progress === 'string') {
+                    if (typeof settings.progress == 'string') {
                         var progress = window[settings.progress];
-                        if (typeof progress === 'function') {
+                        if (typeof progress == 'function') {
                             progress(complete);
                         }
-                    } else {
+                    } else if (typeof settings.progress == 'function') {
                         settings.progress(complete);
                     }
                 }
             };
         // render functionality for each file input
-        return this.each(function() {
-            var $input = $(this);
-            if ($input.is('input')) {
-                // override settings
-                if ($input.data('url') !== 'undefined') {
-                    settings.url = $input.data('url');
+        return $(this).each(function() {
+            var self = $(this);
+            if (self.is('input[type=file]')) {
+                // data-url
+                if (typeof self.data('url') != 'undefined') {
+                    settings.url = self.data('url');
+                    consoleLog('set url', settings.url);
                 }
-                if ($input.attr('accept')) {
-                    settings.accept = $input.attr('accept').split('|');
-                } else if (settings.accept) {
-                    $input.attr('accept', settings.accept.join('|'));
+                // accept
+                if (typeof self.attr('accept') != 'undefined') {
+                    settings.accept = self.attr('accept').split('|');
+                    consoleLog('set accept', settings.accept);
+                } else if (typeof settings.accept != 'undefined') {
+                    self.attr('accept', settings.accept.join('|'));
+                    consoleLog('set accept', settings.accept);
                 }
-                if ($input.data('fields') !== 'undefined') {
-                    var fields = $input.data('fields');
-                    if (typeof fields === 'string') {
+                // data-fields
+                if (typeof self.data('fields') != 'undefined') {
+                    var fields = self.data('fields');
+                    if (typeof fields == 'string') {
                         // Check for already created object
                         var _fields = window[fields];
-                        if (typeof _fields === 'function') {
+                        if (typeof _fields == 'function') {
                             settings.fields = _fields;
                         } else {
                             // Check for 'key=value|key=value|key=value'
                             var dataFields = fields.split('|');
                             if (dataFields.length) {
                                 settings.fields = {};
-                                $.each(dataFields, function(key, dataField){
+                                $.each(dataFields, function(key, dataField) {
                                     var value = dataField.split('=');
                                     if (value.length) {
-                                        eval('settings.fields.'+value[0]+' = "'+value[1]+'";');
+                                        eval('settings.fields.' + value[0] + ' = "' + value[1] + '";');
                                     }
                                 });
                             }
                         }
                     }
+                    consoleLog('set fields', settings.fields);
                 }
-                if ($input.data('holder') !== 'undefined') {
-                    settings.holder = $input.data('holder');
+                // data-holder
+                if (typeof self.data('holder') != 'undefined') {
+                    settings.holder = self.data('holder');
+                    consoleLog('set holder', settings.holder);
                 }
-                if ($input.data('progress') !== 'undefined') {
-                    settings.progress = $input.data('progress');
+                // data-progress
+                if (typeof self.data('progress') != 'undefined') {
+                    settings.progress = self.data('progress');
+                    consoleLog('set progress', settings.progress);
                 }
-                if ($input.data('complete') !== 'undefined') {
-                    settings.complete = $input.data('complete');
+                // data-complete
+                if (typeof self.data('complete') != 'undefined') {
+                    settings.complete = self.data('complete');
+                    consoleLog('set complete', settings.complete);
                 }
-                if ($input.data('preview') !== 'undefined') {
-                    settings.preview = $input.data('preview');
+                // data-preview
+                if (typeof self.data('preview') != 'undefined') {
+                    settings.preview = self.data('preview');
+                    consoleLog('set preview', settings.preview);
                 }
                 // drag n drop support
                 if (supported.dnd && settings.holder) {
                     consoleLog('dnd supported');
                     $(settings.holder).on('dragover', function(e) {
                         $(this).addClass('hover');
-                        $input.addClass('disabled');
+                        self.addClass('disabled');
                         // reset progress bar
                         setProgress(0);
                         return false;
                     }).on('dragend', function(e) {
                         $(this).removeClass('hover');
-                        $input.removeClass('disabled');
+                        self.removeClass('disabled');
                         // reset progress bar
                         setProgress(0);
                         return false;
@@ -218,7 +241,7 @@
                         // @url http://stackoverflow.com/questions/7640234/jquery-ui-draggable-droppable-datatransfer-is-undefined
                         e.dataTransfer = e.originalEvent.dataTransfer;
                         $(this).removeClass('hover');
-                        $input.removeClass('disable');
+                        self.removeClass('disable');
                         var file = e.dataTransfer != 'undefined' && e.dataTransfer.files.length ? e.dataTransfer.files[0] : null;
                         // only accept mime types we provide
                         if (file) {
@@ -232,7 +255,7 @@
                         }
                     });
                 }
-                $input.change(function(e) {
+                self.change(function(e) {
                     var file = $(this).get(0).files[0];
                     // reset progress bar
                     setProgress(0);
@@ -249,5 +272,23 @@
                 }).on('fileselect', fileSelect);
             }
         });
-    }
+    };
+    // default options
+    $.fn.html5uploader.defaults = {
+        accept: [
+            'image/png',
+            'image/jpeg',
+            'image/gif'
+        ],
+        url: null,
+        fields: {},
+        holder: null,
+        progress: null,
+        preview: null,
+        complete: null,
+        error: null,
+        debug: false,
+        history: [],
+        currentProgress: 0
+    };
 })(jQuery);
