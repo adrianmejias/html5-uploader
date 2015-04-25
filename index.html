@@ -24,7 +24,7 @@
 					<form role="form">
 						<div class="form-group">
 							<label for="file" class="sr-only">File</label>
-							<input type="file" id="file" name="file" data-url="upload.php" class="form-control">
+							<input type="file" id="file" name="file" data-url="upload.php" data-holder=".form-control-holder" data-progress="customProgress" class="form-control">
 							<p class="help-block">
 								<div class="form-control-holder text-center text-muted">
 									Drag and drop your file here.
@@ -47,28 +47,40 @@
 			</div>
 		</div>
 		<script>
+		// Custom attributes
+		var customProgress = function(complete)
+			{
+				// Lovely visual...
+				if ($('.progress .progress-bar').attr('aria-valuenow') != complete) {
+					$('.progress .progress-bar').css('width', complete+'%').attr('aria-valuenow', complete);
+					$('.form-control-progress .sr-only').text(complete);
+				}
+			};
+		// Load when ready...
 		$(function()
 		{
-			$('input[type=file]').html5Uploader({
+			$('input[type=file]').html5uploader({
 				//url: 'upload.php',
+				//holder: '.form-control-holder',
 				fields: {
-					'type': 'image'
+					type: 'image'
 				},
-				holder: '.form-control-holder',
-				progress: function(data)
+				/*progress: function(complete)
 				{
-					if ($('.progress .progress-bar').attr('aria-valuenow') != data) {
-						$('.progress .progress-bar').css('width', data+'%').attr('aria-valuenow', data);
-						$('.form-control-progress .sr-only').text(data);
+					if ($('.progress .progress-bar').attr('aria-valuenow') != complete) {
+						$('.progress .progress-bar').css('width', complete+'%').attr('aria-valuenow', complete);
+						$('.form-control-progress .sr-only').text(complete);
 					}
-				},
-				preview: function(data)
+				},*/
+				preview: function(file)
 				{
-					$('.form-control-preview').attr('src', data);
+					// Append file to our ready and willing img placeholder
+					$('.form-control-preview').attr('src', file);
 				},
-				complete: function(data, response)
+				complete: function(file, response)
 				{
-					console.log('completed', data, response);
+					// Success!
+					console.log('completed', file, response);
 				}
 			});
 		});
