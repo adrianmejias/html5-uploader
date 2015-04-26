@@ -3,8 +3,33 @@ html5-uploader
 
 Upload files using html5.
 
-Example file upload and usage
-------------
+## Table of contents
+
+- [Quick start](#quick-start)
+- [What's included](#whats-included)
+- [Example](#example)
+- [Available options](#available-options)
+
+## Quick start
+
+Several quick start options are available:
+
+- [Download the latest release](https://github.com/adrianmejias/html5-uploader/archive/v0.0.8.zip).
+- Clone the repo: `git clone https://github.com/adrianmejias/html5-uploader.git`.
+- Install with [Bower](http://bower.io): `bower install html5-uploader`.
+
+### What's included
+
+Within the download you'll find the following directories and files, logically grouping common assets and providing both compiled and minified variations. You'll see something like this:
+
+```
+html5-uploader/
+├── html5-uploader.js
+├── html5-uploader.min.js
+```
+
+### Example
+Example file upload and usage:
 
 **Demo:** https://adrianmejias.com/html5-uploader
 
@@ -22,8 +47,7 @@ $('input[type=file]').html5Uploader();
 
 To ``override`` loaded javascript configuration settings, you will need to add ``data-*`` tags to the file (input) field. The setting ``accept`` may be set without ``data-`` attribute prefix.
 
-Available options
-------------
+### Available options
 
 * ``accept``: **array|string** Mime-types that you wish to accept.
     - Alternatively you may provide ``accept`` tag in the file (input) field that will be translated internally. (Nothing fancy though...)
