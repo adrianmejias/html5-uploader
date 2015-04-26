@@ -14,7 +14,7 @@ Upload files using html5.
 
 Several quick start options are available:
 
-- [Download the latest release](https://github.com/adrianmejias/html5-uploader/archive/v0.0.8.zip).
+- [Download the latest release](https://github.com/adrianmejias/html5-uploader/archive/0.0.8.zip).
 - Clone the repo: `git clone https://github.com/adrianmejias/html5-uploader.git`.
 - Install with [Bower](http://bower.io): `bower install html5-uploader`.
 
