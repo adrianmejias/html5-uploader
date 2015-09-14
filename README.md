@@ -42,7 +42,7 @@ Example file upload and usage:
 ```
 
 ```javascript
-$('input[type=file]').html5Uploader();
+$('input[type=file]').html5uploader();
 ```
 
 To ``override`` loaded javascript configuration settings, you will need to add ``data-*`` tags to the file (input) field. The setting ``accept`` may be set without ``data-`` attribute prefix.
