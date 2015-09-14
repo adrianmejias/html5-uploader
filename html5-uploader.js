@@ -17,7 +17,7 @@
         };
     // plugin
     $.fn.html5uploader = function(options) {
-        var settings = $.extend($.fn.html5uploader.defaults, options),
+        var settings = $.extend({}, $.fn.html5uploader.defaults, options),
             /**
              * @url http://www.paulirish.com/2009/log-a-lightweight-wrapper-for-consolelog/
              * @return void

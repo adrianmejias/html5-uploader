@@ -1,16 +1,12 @@
-.form-control-holder
-{
-    margin: 15px 0;
-    padding: 5px;
-
-    border: 1px dashed #ccc;
-    border-radius: 5px;
+.form-control-holder {
+	margin: 15px 0;
+	padding: 5px;
+	border: 1px dashed #ccc;
+	border-radius: 5px;
 }
-.form-control-holder.hover
-{
-    border: 1px solid #ccc;
+.form-control-holder.hover {
+	border: 1px solid #ccc;
 }
-.form-control-holder:hover
-{
-    border: 1px solid #ccc;
+.form-control-holder:hover {
+	border: 1px solid #ccc;
 }
