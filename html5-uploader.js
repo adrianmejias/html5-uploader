@@ -17,10 +17,9 @@
         };
     // plugin
     $.fn.html5uploader = function(options) {
-        var settings = $.extend({}, $.fn.html5uploader.defaults, options),
+        var settings = $.extend($.fn.html5uploader.defaults, options),
             /**
              * @url http://www.paulirish.com/2009/log-a-lightweight-wrapper-for-consolelog/
-             * @return void
              */
             consoleLog = function() {
                 if (settings.debug === true) {
@@ -35,7 +34,6 @@
              *
              * @param  {object} e
              * @param  {object} file
-             * @return void
              */
             fileSelect = function(e, file) {
                 consoleLog('fileselect', file);
@@ -108,11 +106,29 @@
                 }
             },
             /**
+             * Functionality to set error.
+             * 
+             * @param {object} file
+             * @param {string} error
+             */
+            setError = function(file, error) {
+                if (settings.error) {
+                    if (typeof settings.error == 'string') {
+                        var error = window[settings.error];
+                        if (typeof error == 'function') {
+                            error.call(this, file, error, '');
+                        }
+                    } else {
+                        // TODO: error codes
+                        settings.error.call(this, file, error, '');
+                    }
+                }
+            },
+            /**
              * Functionality to set complete.
              *
-             * @param {string} file
+             * @param {object} file
              * @param {object} response
-             * @param void
              */
             setComplete = function(file, response) {
                 // complete
@@ -127,16 +143,8 @@
                     }
                 }
                 // error
-                if (settings.error && response.error) {
-                    if (typeof settings.error == 'string') {
-                        var error = window[settings.error];
-                        if (typeof error == 'function') {
-                            error.call(this, file, '', response.error);
-                        }
-                    } else {
-                        // TODO: error codes
-                        settings.error.call(this, file, '', response.error);
-                    }
+                if (response.error) {
+                    setError(file, response.error);
                 }
             },
             /**
@@ -267,6 +275,9 @@
                             consoleLog('acceptable mime type', file.type, settings.accept);
                             // trigger our upload functionality
                             $(this).trigger('fileselect', file);
+                        } else {
+                            // error
+                            setError(file, settings.language.invalidMimeType);
                         }
                     }
                 }).on('fileselect', fileSelect);
@@ -280,6 +291,9 @@
             'image/jpeg',
             'image/gif'
         ],
+        language: {
+            invalidMimeType: 'Invalid mime type.'
+        },
         url: null,
         fields: {},
         holder: null,
