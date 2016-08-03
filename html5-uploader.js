@@ -51,7 +51,7 @@
                         settings.progress(0);
                     }
                     // append our file data as a form variable
-                    formData.append('file', file);
+                    formData.append(settings.name, file);
                     // append our extra fields
                     if (settings.fields) {
                         $.each(settings.fields, function(key, value) {
@@ -171,6 +171,16 @@
         return $(this).each(function() {
             var self = $(this);
             if (self.is('input[type=file]')) {
+                // input name
+                if (typeof self.attr('name') != 'undefined') {
+                    settings.name = self.attr('name');
+                    consoleLog('set name', settings.name);
+                }
+                // data-name
+                if (typeof self.data('name') != 'undefined') {
+                    settings.name = self.data('name');
+                    consoleLog('set name', settings.name);
+                }
                 // data-url
                 if (typeof self.data('url') != 'undefined') {
                     settings.url = self.data('url');
@@ -286,6 +296,7 @@
     };
     // default options
     $.fn.html5uploader.defaults = {
+        name: 'file',
         accept: [
             'image/png',
             'image/jpeg',
