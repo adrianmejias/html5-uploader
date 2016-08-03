@@ -14,7 +14,7 @@ Upload files using html5.
 
 Several quick start options are available:
 
-- [Download the latest release](https://github.com/adrianmejias/html5-uploader/archive/0.0.8.zip).
+- [Download the latest release](https://github.com/adrianmejias/html5-uploader/archive/0.0.11.zip).
 - Clone the repo: `git clone https://github.com/adrianmejias/html5-uploader.git`.
 - Install with [Bower](http://bower.io): `bower install html5-uploader`.
 
@@ -57,6 +57,7 @@ To ``override`` loaded javascript configuration settings, you will need to add `
 * ``preview``: **object|string** Create your own preview function.
 * ``progress``: **object|string** Create your own progress function.
 * ``url``: **string** The url where the form data will post to.
+* ``name``: **string** The name of the form data will post as.
 * ``complete``: **object|string** Create your own completion function.
 * ``debug``: **boolean** Show console.log report in browser.
 
@@ -71,6 +72,7 @@ or
 
 ```javascript
 $('input[type=file]').html5Uploader({
+  name: 'file',
   accept: [
     'image/png',
     'image/jpeg',
