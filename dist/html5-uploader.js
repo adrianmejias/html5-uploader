@@ -1,4 +1,4 @@
-;
+'use strict';
 (function($) {
     // support for images only
     var previewMimeTypes = {
@@ -14,11 +14,35 @@
             dnd: 'draggable' in document.createElement('span'),
             formdata: !!window.FormData,
             progress: 'upload' in new XMLHttpRequest
+        },
+        // default options
+        defaults = {
+            name: 'file',
+            accept: [
+                'image/png',
+                'image/jpeg',
+                'image/gif'
+            ],
+            language: {
+                invalidMimeType: 'Invalid mime type.'
+            },
+            url: null,
+            fields: {},
+            holder: null,
+            progress: null,
+            preview: null,
+            complete: null,
+            error: null,
+            debug: false,
+            history: [],
+            currentProgress: 0
         };
     // plugin
     $.fn.html5uploader = function(options) {
-        var settings = $.extend($.fn.html5uploader.defaults, options),
+        var settings = $.extend(defaults, typeof options !== 'undefined' ? options : {}),
             /**
+             * Show messages in chrome log.
+             * 
              * @url http://www.paulirish.com/2009/log-a-lightweight-wrapper-for-consolelog/
              */
             consoleLog = function() {
@@ -168,34 +192,35 @@
                 }
             };
         // render functionality for each file input
-        return $(this).each(function() {
+        return this.each(function() {
             var self = $(this);
             if (self.is('input[type=file]')) {
                 // input name
-                if (typeof self.attr('name') != 'undefined') {
+                if (typeof self.attr('name') !== 'undefined') {
                     settings.name = self.attr('name');
                     consoleLog('set name', settings.name);
                 }
                 // data-name
-                if (typeof self.data('name') != 'undefined') {
+                if (typeof self.data('name') !== 'undefined') {
                     settings.name = self.data('name');
                     consoleLog('set name', settings.name);
                 }
                 // data-url
-                if (typeof self.data('url') != 'undefined') {
+                if (typeof self.data('url') !== 'undefined') {
                     settings.url = self.data('url');
                     consoleLog('set url', settings.url);
                 }
                 // accept
-                if (typeof self.attr('accept') != 'undefined') {
-                    settings.accept = self.attr('accept').split('|');
+                if (typeof self.attr('accept') !== 'undefined') {
+                    var accept = self.attr('accept');
+                    settings.accept = accept.split('|');
                     consoleLog('set accept', settings.accept);
                 } else if (typeof settings.accept != 'undefined') {
                     self.attr('accept', settings.accept.join('|'));
                     consoleLog('set accept', settings.accept);
                 }
                 // data-fields
-                if (typeof self.data('fields') != 'undefined') {
+                if (typeof self.data('fields') !== 'undefined') {
                     var fields = self.data('fields');
                     if (typeof fields == 'string') {
                         // Check for already created object
@@ -219,22 +244,22 @@
                     consoleLog('set fields', settings.fields);
                 }
                 // data-holder
-                if (typeof self.data('holder') != 'undefined') {
+                if (typeof self.data('holder') !== 'undefined') {
                     settings.holder = self.data('holder');
                     consoleLog('set holder', settings.holder);
                 }
                 // data-progress
-                if (typeof self.data('progress') != 'undefined') {
+                if (typeof self.data('progress') !== 'undefined') {
                     settings.progress = self.data('progress');
                     consoleLog('set progress', settings.progress);
                 }
                 // data-complete
-                if (typeof self.data('complete') != 'undefined') {
+                if (typeof self.data('complete') !== 'undefined') {
                     settings.complete = self.data('complete');
                     consoleLog('set complete', settings.complete);
                 }
                 // data-preview
-                if (typeof self.data('preview') != 'undefined') {
+                if (typeof self.data('preview') !== 'undefined') {
                     settings.preview = self.data('preview');
                     consoleLog('set preview', settings.preview);
                 }
@@ -293,27 +318,5 @@
                 }).on('fileselect', fileSelect);
             }
         });
-    };
-    // default options
-    $.fn.html5uploader.defaults = {
-        name: 'file',
-        accept: [
-            'image/png',
-            'image/jpeg',
-            'image/gif'
-        ],
-        language: {
-            invalidMimeType: 'Invalid mime type.'
-        },
-        url: null,
-        fields: {},
-        holder: null,
-        progress: null,
-        preview: null,
-        complete: null,
-        error: null,
-        debug: false,
-        history: [],
-        currentProgress: 0
     };
 })(jQuery);
