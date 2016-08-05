@@ -263,7 +263,6 @@
                     settings.preview = self.data('preview');
                     consoleLog('set preview', settings.preview);
                 }
-                console.log(settings);
                 // drag n drop support
                 if (supported.dnd && settings.holder) {
                     consoleLog('dnd supported');
