@@ -1,7 +1,7 @@
 {
     "name": "html5-uploader",
     "description": "HTML5 file uploader.",
-    "version": "0.0.14",
+    "version": "0.0.15",
     "keywords": [
         "html5",
         "js",
@@ -11,11 +11,13 @@
     ],
     "homepage": "https://adrianmejias.com/html5-uploader",
     "main": [
-        "dist/html5-uploader.js",
+        "src/html5-uploader.js",
         "dist/html5-uploader.min.js"
     ],
     "ignore": [
         "tests/",
+        "node_modules/",
+        "bower_components/",
         "composer.json",
         "README.md"
     ],
