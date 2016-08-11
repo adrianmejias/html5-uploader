@@ -37,7 +37,7 @@ Example file upload and usage:
 <!-- Include jQuery Beforehand -->
 <script src="html5-uploader.js"></script>
 <form>
-    <input type="file" name="file">
+    <input type="file" name="file"/>
 </form>
 ```
 
