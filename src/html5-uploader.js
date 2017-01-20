@@ -42,7 +42,7 @@
         var settings = $.extend({}, defaults, options || {}),
             /**
              * Show messages in chrome log.
-             * 
+             *
              * @url http://www.paulirish.com/2009/log-a-lightweight-wrapper-for-consolelog/
              */
             consoleLog = function() {
@@ -131,7 +131,7 @@
             },
             /**
              * Functionality to set error.
-             * 
+             *
              * @param {object} file
              * @param {string} error
              */
@@ -285,7 +285,7 @@
                         e.dataTransfer = e.originalEvent.dataTransfer;
                         $(this).removeClass('hover');
                         self.removeClass('disable');
-                        var file = e.dataTransfer != 'undefined' && e.dataTransfer.files.length ? e.dataTransfer.files[0] : null;
+                        var file = e.dataTransfer != 'undefined' && e.dataTransfer.files.length ? e.dataTransfer.files[0] : self.files[0];
                         // only accept mime types we provide
                         if (file) {
                             var acceptable = $.inArray(file.type, settings.accept);
